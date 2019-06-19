@@ -47,14 +47,10 @@ class GildedRose {
     }
 
     private void improve(Item item) {
-        if (item.quality < 50) {
-            item.quality = item.quality + 1;
-        }
+        item.quality = Math.min(50, item.quality + 1);
     }
 
     private void degrade(Item item) {
-        if (item.quality > 0) {
-            item.quality = item.quality - 1;
-        }
+        item.quality = Math.max(0, item.quality - 1);
     }
 }
