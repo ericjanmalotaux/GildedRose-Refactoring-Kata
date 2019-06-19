@@ -15,6 +15,19 @@ class GildedRose {
             item.sellIn = item.sellIn - 1;
             if (item.name.equals("Aged Brie")) {
                 improve(item);
+
+
+                if (item.sellIn < 0) {
+                    if (item.name.equals("Aged Brie")) {
+                        improve(item);
+                    } else {
+                        if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+                            item.quality = 0;
+                        } else {
+                            degrade(item);
+                        }
+                    }
+                }
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
                 improve(item);
 
@@ -25,19 +38,32 @@ class GildedRose {
                 if (item.sellIn < 5) {
                     improve(item);
                 }
+
+
+                if (item.sellIn < 0) {
+                    if (item.name.equals("Aged Brie")) {
+                        improve(item);
+                    } else {
+                        if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+                            item.quality = 0;
+                        } else {
+                            degrade(item);
+                        }
+                    }
+                }
             } else {
                 degrade(item);
-            }
 
 
-            if (item.sellIn < 0) {
-                if (item.name.equals("Aged Brie")) {
-                    improve(item);
-                } else {
-                    if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        item.quality = 0;
+                if (item.sellIn < 0) {
+                    if (item.name.equals("Aged Brie")) {
+                        improve(item);
                     } else {
-                        degrade(item);
+                        if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+                            item.quality = 0;
+                        } else {
+                            degrade(item);
+                        }
                     }
                 }
             }
