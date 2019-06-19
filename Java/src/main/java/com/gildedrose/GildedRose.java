@@ -14,21 +14,21 @@ class GildedRose {
             }
             item.sellIn = item.sellIn - 1;
             if (item.name.equals("Aged Brie")) {
-                improve(item);
+                improve(item, 1);
 
 
                 if (item.sellIn < 0) {
-                    improve(item);
+                    improve(item, 1);
                 }
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                improve(item);
+                improve(item, 1);
 
                 if (item.sellIn < 10) {
-                    improve(item);
+                    improve(item, 1);
                 }
 
                 if (item.sellIn < 5) {
-                    improve(item);
+                    improve(item, 1);
                 }
 
 
@@ -36,21 +36,21 @@ class GildedRose {
                     item.quality = 0;
                 }
             } else {
-                degrade(item);
+                degrade(item, 1);
 
 
                 if (item.sellIn < 0) {
-                    degrade(item);
+                    degrade(item, 1);
                 }
             }
         }
     }
 
-    private void improve(Item item) {
-        item.quality = Math.min(50, item.quality + 1);
+    private void improve(Item item, int amount) {
+        item.quality = Math.min(50, item.quality + amount);
     }
 
-    private void degrade(Item item) {
-        item.quality = Math.max(0, item.quality - 1);
+    private void degrade(Item item, int amount) {
+        item.quality = Math.max(0, item.quality - amount);
     }
 }
