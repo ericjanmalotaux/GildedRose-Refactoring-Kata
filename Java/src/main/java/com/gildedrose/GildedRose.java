@@ -14,7 +14,7 @@ class GildedRose {
             }
             item.sellIn = item.sellIn - 1;
             if (item.name.equals("Aged Brie")) {
-                degrade(item, brieDegradation(item));
+                degrade(item, -defaultDegradation(item));
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
                 degrade(item, backstageDegradation(item));
             } else {
@@ -34,10 +34,6 @@ class GildedRose {
         else if (item.sellIn < 10) amount = -2;
         else amount = -1;
         return amount;
-    }
-
-    private int brieDegradation(Item item) {
-        return -defaultDegradation(item);
     }
 
     private void degrade(Item item, int amount) {
