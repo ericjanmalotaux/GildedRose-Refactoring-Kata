@@ -14,34 +14,16 @@ class GildedRose {
             }
             item.sellIn = item.sellIn - 1;
             if (item.name.equals("Aged Brie")) {
-                degrade(item, -1);
-
-
-                if (item.sellIn < 0) {
-                    degrade(item, -1);
-                }
+                degrade(item, item.sellIn >= 0 ? -1 : -2);
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                degrade(item, -1);
-
-                if (item.sellIn < 10) {
-                    degrade(item, -1);
-                }
-
-                if (item.sellIn < 5) {
-                    degrade(item, -1);
-                }
-
-
-                if (item.sellIn < 0) {
-                    item.quality = 0;
-                }
+                int amount;
+                if (item.sellIn < 0) amount = -item.quality;
+                else if (item.sellIn < 5)  amount = -3;
+                else if (item.sellIn < 10) amount = -2;
+                else amount = -1;
+                degrade(item, amount);
             } else {
-                degrade(item, 1);
-
-
-                if (item.sellIn < 0) {
-                    degrade(item, 1);
-                }
+                degrade(item, item.sellIn >= 0 ? 1 : 2);
             }
         }
     }
