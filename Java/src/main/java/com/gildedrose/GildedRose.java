@@ -12,7 +12,7 @@ class GildedRose {
     public void updateQuality() {
         this.items = Arrays.stream(items)
                 .map(item -> item.name.equals("Sulfuras, Hand of Ragnaros")
-                        ? new Item(item.name, item.sellIn, item.quality)
+                        ? item
                         : new Item(item.name, item.sellIn - 1, Math.min(50, Math.max(0, item.quality - degradation(item)))))
                 .toArray(Item[]::new);
     }
