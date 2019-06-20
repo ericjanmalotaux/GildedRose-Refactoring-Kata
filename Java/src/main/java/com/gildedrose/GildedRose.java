@@ -1,5 +1,7 @@
 package com.gildedrose;
 
+import java.util.Arrays;
+
 class GildedRose {
     Item[] items;
 
@@ -8,10 +10,7 @@ class GildedRose {
     }
 
     public void updateQuality() {
-        for (Item item : items) {
-            if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                continue;
-            }
+        Arrays.stream(items).filter(item -> !item.name.equals("Sulfuras, Hand of Ragnaros")).forEach(item -> {
             item.sellIn = item.sellIn - 1;
             if (item.name.equals("Aged Brie")) {
                 degrade(item, -defaultDegradation(item));
@@ -20,7 +19,7 @@ class GildedRose {
             } else {
                 degrade(item, defaultDegradation(item));
             }
-        }
+        });
     }
 
     private int defaultDegradation(Item item) {
@@ -30,7 +29,7 @@ class GildedRose {
     private int backstageDegradation(Item item) {
         int amount;
         if (item.sellIn < 0) amount = -item.quality;
-        else if (item.sellIn < 5)  amount = -3;
+        else if (item.sellIn < 5) amount = -3;
         else if (item.sellIn < 10) amount = -2;
         else amount = -1;
         return amount;
