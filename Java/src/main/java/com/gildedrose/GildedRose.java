@@ -17,22 +17,15 @@ class GildedRose {
     }
 
     private int degradation(Item item) {
-        int amount;
-        switch (item.name) {
-            case "Aged Brie":
-                amount = -defaultDegradation(item);
-                break;
-            case "Backstage passes to a TAFKAL80ETC concert":
-                amount = backstageDegradation(item);
-                break;
-            case "Conjured Mana Cake":
-                amount = 2 * defaultDegradation(item);
-                break;
-            default:
-                amount = defaultDegradation(item);
-                break;
+        if ("Aged Brie".equals(item.name)) {
+            return -defaultDegradation(item);
+        } else if ("Backstage passes to a TAFKAL80ETC concert".equals(item.name)) {
+            return backstageDegradation(item);
+        } else if ("Conjured Mana Cake".equals(item.name)) {
+            return 2 * defaultDegradation(item);
+        } else {
+            return defaultDegradation(item);
         }
-        return amount;
     }
 
     private int defaultDegradation(Item item) {
