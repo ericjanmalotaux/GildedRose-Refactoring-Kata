@@ -17,15 +17,10 @@ class GildedRose {
     }
 
     private int degradation(Item item) {
-        if ("Aged Brie".equals(item.name)) {
-            return -defaultDegradation(item);
-        } else if ("Backstage passes to a TAFKAL80ETC concert".equals(item.name)) {
-            return backstageDegradation(item);
-        } else if ("Conjured Mana Cake".equals(item.name)) {
-            return 2 * defaultDegradation(item);
-        } else {
-            return defaultDegradation(item);
-        }
+        if ("Aged Brie".equals(item.name)) return -defaultDegradation(item);
+        else if ("Backstage passes to a TAFKAL80ETC concert".equals(item.name)) return backstageDegradation(item);
+        else if ("Conjured Mana Cake".equals(item.name)) return 2 * defaultDegradation(item);
+        else return defaultDegradation(item);
     }
 
     private int defaultDegradation(Item item) {
