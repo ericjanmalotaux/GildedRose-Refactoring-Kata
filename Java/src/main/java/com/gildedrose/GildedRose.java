@@ -47,10 +47,10 @@ class GildedRose {
     }
 
     private void improve(Item item, int amount) {
-        item.quality = Math.min(50, item.quality + amount);
+        degrade(item, -amount);
     }
 
     private void degrade(Item item, int amount) {
-        item.quality = Math.max(0, item.quality - amount);
+        item.quality = Math.min(50, Math.max(0, item.quality - amount));
     }
 }
