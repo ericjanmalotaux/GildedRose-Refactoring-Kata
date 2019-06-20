@@ -16,6 +16,8 @@ class GildedRose {
                 degrade(item, -defaultDegradation(item));
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
                 degrade(item, backstageDegradation(item));
+            } else if (item.name.equals("Conjured Mana Cake")) {
+                degrade(item, 2 * defaultDegradation(item));
             } else {
                 degrade(item, defaultDegradation(item));
             }
