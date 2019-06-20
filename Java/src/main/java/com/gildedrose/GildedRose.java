@@ -37,7 +37,7 @@ class GildedRose {
     }
 
     private int brieDegradation(Item item) {
-        return item.sellIn >= 0 ? -1 : -2;
+        return -defaultDegradation(item);
     }
 
     private void degrade(Item item, int amount) {
