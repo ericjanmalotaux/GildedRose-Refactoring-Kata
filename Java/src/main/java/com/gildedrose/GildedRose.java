@@ -12,7 +12,7 @@ class GildedRose {
     public void updateQuality() {
         Arrays.stream(items).filter(item -> !item.name.equals("Sulfuras, Hand of Ragnaros")).forEach(item -> {
             item.sellIn = item.sellIn - 1;
-            degrade(item, degradation(item));
+            item.quality = Math.min(50, Math.max(0, item.quality - degradation(item)));
         });
     }
 
@@ -34,7 +34,4 @@ class GildedRose {
         else return -1;
     }
 
-    private void degrade(Item item, int amount) {
-        item.quality = Math.min(50, Math.max(0, item.quality - amount));
-    }
 }
