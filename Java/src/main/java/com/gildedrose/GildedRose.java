@@ -2,6 +2,9 @@ package com.gildedrose;
 
 import java.util.Arrays;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 class GildedRose {
     Item[] items;
 
@@ -13,7 +16,7 @@ class GildedRose {
         this.items = Arrays.stream(items)
                 .map(item -> item.name.equals("Sulfuras, Hand of Ragnaros")
                         ? item
-                        : new Item(item.name, item.sellIn - 1, Math.min(50, Math.max(0, item.quality - degradation(item)))))
+                        : new Item(item.name, item.sellIn - 1, min(50, max(0, item.quality - degradation(item)))))
                 .toArray(Item[]::new);
     }
 
