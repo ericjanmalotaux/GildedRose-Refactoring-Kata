@@ -10,10 +10,11 @@ class GildedRose {
     }
 
     public void updateQuality() {
-        Arrays.stream(items).filter(item -> !item.name.equals("Sulfuras, Hand of Ragnaros")).forEach(item -> {
-            item.sellIn = item.sellIn - 1;
-            item.quality = Math.min(50, Math.max(0, item.quality - degradation(item)));
-        });
+        this.items = Arrays.stream(items)
+                .map(item -> item.name.equals("Sulfuras, Hand of Ragnaros")
+                        ? new Item(item.name, item.sellIn, item.quality)
+                        : new Item(item.name, item.sellIn - 1, Math.min(50, Math.max(0, item.quality - degradation(item)))))
+                .toArray(Item[]::new);
     }
 
     private int degradation(Item item) {
@@ -24,14 +25,13 @@ class GildedRose {
     }
 
     private int defaultDegradation(Item item) {
-        return item.sellIn >= 0 ? 1 : 2;
+        return item.sellIn > 0 ? 1 : 2;
     }
 
     private int backstageDegradation(Item item) {
-        if (item.sellIn < 0) return -item.quality;
-        else if (item.sellIn < 5) return -3;
-        else if (item.sellIn < 10) return -2;
+        if (item.sellIn <= 0) return -item.quality;
+        else if (item.sellIn <= 5) return -3;
+        else if (item.sellIn <= 10) return -2;
         else return -1;
     }
-
 }
