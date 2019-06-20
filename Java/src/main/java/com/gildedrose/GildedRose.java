@@ -29,12 +29,10 @@ class GildedRose {
     }
 
     private int backstageDegradation(Item item) {
-        int amount;
-        if (item.sellIn < 0) amount = -item.quality;
-        else if (item.sellIn < 5) amount = -3;
-        else if (item.sellIn < 10) amount = -2;
-        else amount = -1;
-        return amount;
+        if (item.sellIn < 0) return -item.quality;
+        else if (item.sellIn < 5) return -3;
+        else if (item.sellIn < 10) return -2;
+        else return -1;
     }
 
     private void degrade(Item item, int amount) {
