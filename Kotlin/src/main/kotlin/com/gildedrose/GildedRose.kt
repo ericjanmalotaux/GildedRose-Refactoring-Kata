@@ -3,8 +3,9 @@ package com.gildedrose
 class GildedRose(val items: Array<Item>) {
 
     fun updateQuality() {
-        items.forEach { item ->
-            if (item.name != "Sulfuras, Hand of Ragnaros") {
+        items
+            .filterNot { item -> item.name == "Sulfuras, Hand of Ragnaros" }
+            .forEach { item ->
                 if (item.name != "Aged Brie" && item.name != "Backstage passes to a TAFKAL80ETC concert") {
                     if (item.quality > 0) {
                         item.quality = item.quality - 1
@@ -47,6 +48,5 @@ class GildedRose(val items: Array<Item>) {
                     }
                 }
             }
-        }
     }
 }
