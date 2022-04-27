@@ -19,14 +19,12 @@ class GildedRose(val items: Array<Item>) {
                             if (sellIn < 0) {
                                 quality = 0
                             } else {
-                                if (quality < 50) {
-                                    quality += 1
-                                    if (sellIn < 10) {
-                                        improve()
-                                    }
-                                    if (sellIn < 5) {
-                                        improve()
-                                    }
+                                improve()
+                                if (sellIn < 10) {
+                                    improve()
+                                }
+                                if (sellIn < 5) {
+                                    improve()
                                 }
                             }
                         }
