@@ -8,29 +8,33 @@ class GildedRose(val items: Array<Item>) {
             .forEach { item ->
                 item.apply {
                     sellIn = sellIn - 1
-                    if (name == "Aged Brie") {
-                        improve()
-                        if (sellIn < 0) {
+                    when (name) {
+                        "Aged Brie" -> {
                             improve()
+                            if (sellIn < 0) {
+                                improve()
+                            }
                         }
-                    } else if (name == "Backstage passes to a TAFKAL80ETC concert") {
-                        if (sellIn < 0) {
-                            quality = 0
-                        } else {
-                            if (quality < 50) {
-                                quality += 1
-                                if (sellIn < 10) {
-                                    improve()
-                                }
-                                if (sellIn < 5) {
-                                    improve()
+                        "Backstage passes to a TAFKAL80ETC concert" -> {
+                            if (sellIn < 0) {
+                                quality = 0
+                            } else {
+                                if (quality < 50) {
+                                    quality += 1
+                                    if (sellIn < 10) {
+                                        improve()
+                                    }
+                                    if (sellIn < 5) {
+                                        improve()
+                                    }
                                 }
                             }
                         }
-                    } else {
-                        depreciate()
-                        if (sellIn < 0) {
+                        else -> {
                             depreciate()
+                            if (sellIn < 0) {
+                                depreciate()
+                            }
                         }
                     }
                 }
