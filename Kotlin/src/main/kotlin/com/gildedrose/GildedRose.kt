@@ -7,7 +7,25 @@ class GildedRose(val items: Array<Item>) {
             .filterNot { item -> item.name == "Sulfuras, Hand of Ragnaros" }
             .forEach { item ->
                 item.sellIn = item.sellIn - 1
-                if (item.name == "Aged Brie" || item.name == "Backstage passes to a TAFKAL80ETC concert") {
+                if (item.name == "Aged Brie") {
+                    if (item.quality < 50) {
+                        item.quality = item.quality + 1
+
+                        if (item.name == "Backstage passes to a TAFKAL80ETC concert") {
+                            if (item.sellIn < 10) {
+                                if (item.quality < 50) {
+                                    item.quality = item.quality + 1
+                                }
+                            }
+
+                            if (item.sellIn < 5) {
+                                if (item.quality < 50) {
+                                    item.quality = item.quality + 1
+                                }
+                            }
+                        }
+                    }
+                } else if (item.name == "Backstage passes to a TAFKAL80ETC concert") {
                     if (item.quality < 50) {
                         item.quality = item.quality + 1
 
