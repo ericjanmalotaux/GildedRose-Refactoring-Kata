@@ -7,7 +7,7 @@ class GildedRose(val items: Array<Item>) {
             .filterNot { item -> item.name == "Sulfuras, Hand of Ragnaros" }
             .forEach { item ->
                 item.apply {
-                    sellIn = sellIn - 1
+                    sellIn -= 1
                     when (name) {
                         "Aged Brie" -> {
                             improve()
