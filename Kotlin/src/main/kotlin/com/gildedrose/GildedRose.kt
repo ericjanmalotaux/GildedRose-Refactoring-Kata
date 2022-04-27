@@ -6,45 +6,44 @@ class GildedRose(val items: Array<Item>) {
         items
             .filterNot { item -> item.name == "Sulfuras, Hand of Ragnaros" }
             .forEach { item ->
-                item.sellIn = item.sellIn - 1
-                if (item.name == "Aged Brie") {
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1
-                    }
-                    if (item.sellIn < 0) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
+                item.apply {
+
+                    sellIn = sellIn - 1
+                    if (name == "Aged Brie") {
+                        if (quality < 50) {
+                            quality = quality + 1
                         }
-                    }
-                } else if (item.name == "Backstage passes to a TAFKAL80ETC concert") {
-                    if (item.sellIn < 0) {
-                        item.quality = 0
+                        if (sellIn < 0) {
+                            if (quality < 50) {
+                                quality = quality + 1
+                            }
+                        }
+                    } else if (name == "Backstage passes to a TAFKAL80ETC concert") {
+                        if (sellIn < 0) {
+                            quality = 0
+                        } else {
+                            if (quality < 50) {
+                                quality = quality + 1
+                                if (sellIn < 10) {
+                                    if (quality < 50) {
+                                        quality = quality + 1
+                                    }
+                                }
+                                if (sellIn < 5) {
+                                    if (quality < 50) {
+                                        quality = quality + 1
+                                    }
+                                }
+                            }
+                        }
                     } else {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-
-                            if (item.sellIn < 10) {
-                                if (item.quality < 50) {
-                                    item.quality = item.quality + 1
-                                }
-                            }
-
-                            if (item.sellIn < 5) {
-                                if (item.quality < 50) {
-                                    item.quality = item.quality + 1
-                                }
-                            }
+                        if (quality > 0) {
+                            quality = quality - 1
                         }
-                    }
-                } else {
-                    if (item.quality > 0) {
-                        item.quality = item.quality - 1
-                    }
-                }
-                if (item.sellIn < 0) {
-                    if (item.name != "Aged Brie") {
-                        if (item.quality > 0) {
-                            item.quality = item.quality - 1
+                        if (sellIn < 0) {
+                            if (quality > 0) {
+                                quality = quality - 1
+                            }
                         }
                     }
                 }
