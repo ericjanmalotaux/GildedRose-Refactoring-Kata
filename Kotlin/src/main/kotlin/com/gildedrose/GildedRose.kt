@@ -7,16 +7,11 @@ class GildedRose(val items: Array<Item>) {
             .filterNot { item -> item.name == "Sulfuras, Hand of Ragnaros" }
             .forEach { item ->
                 item.apply {
-
                     sellIn = sellIn - 1
                     if (name == "Aged Brie") {
-                        if (quality < 50) {
-                            quality += 1
-                        }
+                        improve()
                         if (sellIn < 0) {
-                            if (quality < 50) {
-                                quality += 1
-                            }
+                            improve()
                         }
                     } else if (name == "Backstage passes to a TAFKAL80ETC concert") {
                         if (sellIn < 0) {
@@ -25,28 +20,32 @@ class GildedRose(val items: Array<Item>) {
                             if (quality < 50) {
                                 quality += 1
                                 if (sellIn < 10) {
-                                    if (quality < 50) {
-                                        quality += 1
-                                    }
+                                    improve()
                                 }
                                 if (sellIn < 5) {
-                                    if (quality < 50) {
-                                        quality += 1
-                                    }
+                                    improve()
                                 }
                             }
                         }
                     } else {
-                        if (quality > 0) {
-                            quality -= 1
-                        }
+                        depreciate()
                         if (sellIn < 0) {
-                            if (quality > 0) {
-                                quality -= 1
-                            }
+                            depreciate()
                         }
                     }
                 }
             }
+    }
+
+    private fun Item.depreciate() {
+        if (quality > 0) {
+            quality -= 1
+        }
+    }
+
+    private fun Item.improve() {
+        if (quality < 50) {
+            quality += 1
+        }
     }
 }
