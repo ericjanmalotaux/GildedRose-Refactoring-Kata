@@ -16,9 +16,7 @@ class GildedRose(val items: Array<Item>) {
                             }
                         }
                         "Backstage passes to a TAFKAL80ETC concert" -> {
-                            if (sellIn < 0) {
-                                quality = 0
-                            } else {
+                            if (sellIn >= 0) {
                                 improve()
                                 if (sellIn < 10) {
                                     improve()
@@ -26,6 +24,8 @@ class GildedRose(val items: Array<Item>) {
                                 if (sellIn < 5) {
                                     improve()
                                 }
+                            } else {
+                                writeOff()
                             }
                         }
                         else -> {
@@ -37,6 +37,10 @@ class GildedRose(val items: Array<Item>) {
                     }
                 }
             }
+    }
+
+    private fun Item.writeOff() {
+        quality = 0
     }
 
     private fun Item.depreciate() {
