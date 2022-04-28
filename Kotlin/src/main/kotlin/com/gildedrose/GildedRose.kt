@@ -16,7 +16,7 @@ class GildedRose(var items: Array<Item>) {
 
     object Normal {
         fun update(item: Item) =
-            advance(item.sellIn)
+            (item.sellIn - 1)
                 .let { sellIn ->
                     depreciate(item.quality)
                         .let { if (sellIn < 0) depreciate(it) else it }
@@ -26,7 +26,7 @@ class GildedRose(var items: Array<Item>) {
 
     object Brie {
         fun update(item: Item): Item =
-            advance(item.sellIn)
+            (item.sellIn - 1)
                 .let { sellIn ->
                     improve(item.quality)
                         .let { if (sellIn < 0) improve(it) else it }
@@ -36,14 +36,16 @@ class GildedRose(var items: Array<Item>) {
 
     object BackstagePass {
         fun update(item: Item) =
-            advance(item.sellIn)
+            (item.sellIn - 1)
                 .let { sellIn ->
-                    (if (sellIn >= 0)
+                    (if (sellIn < 0) 0
+                    else
                         item.quality
                             .let { improve(it) }
                             .let { if (sellIn < 10) improve(it) else it }
                             .let { if (sellIn < 5) improve(it) else it }
-                    else writeOff()).let { Item(item.name, sellIn, it) }
+                            )
+                        .let { Item(item.name, sellIn, it) }
                 }
     }
 
@@ -53,7 +55,5 @@ class GildedRose(var items: Array<Item>) {
 
 }
 
-fun advance(i: Int) = i - 1
 fun depreciate(i: Int) = if (i > 0) i - 1 else i
 fun improve(i: Int) = if (i < 50) i + 1 else i
-fun writeOff() = 0
