@@ -10,7 +10,7 @@ class GildedRose(var items: Array<Item>) {
 
     fun updateQuality() {
         items = items
-            .map { (strategies[it.name] ?: Normal::update).invoke(it.name, it.sellIn, it.quality) }
+            .map { (strategies[it.name] ?: Normal::update).invoke(it) }
             .toTypedArray()
     }
 
@@ -31,36 +31,39 @@ class GildedRose(var items: Array<Item>) {
     }
 
     object Normal : ExtendedItem() {
-        fun update(name: String, sellIn: Int, quality: Int) =
-            advance(sellIn).let { newSellIn ->
-                depreciate(quality)
-                    .let { if (newSellIn < 0) depreciate(it) else it }
-                    .let { Item(name, newSellIn, it) }
-            }
+        fun update(item: Item) =
+            advance(item.sellIn)
+                .let { newSellIn ->
+                    depreciate(item.quality)
+                        .let { if (newSellIn < 0) depreciate(it) else it }
+                        .let { Item(item.name, newSellIn, it) }
+                }
     }
 
     object Brie : ExtendedItem() {
-        fun update(name: String, sellIn: Int, quality: Int): Item =
-            advance(sellIn).let { newSellIn ->
-                improve(quality)
-                    .let { if (newSellIn < 0) improve(it) else it }
-                    .let { Item(name, newSellIn, it) }
-            }
+        fun update(item: Item): Item =
+            advance(item.sellIn)
+                .let { newSellIn ->
+                    improve(item.quality)
+                        .let { if (newSellIn < 0) improve(it) else it }
+                        .let { Item(item.name, newSellIn, it) }
+                }
     }
 
     object BackstagePass : ExtendedItem() {
-        fun update(name: String, sellIn: Int, quality: Int) =
-            advance(sellIn).let { newSellIn ->
-                (if (newSellIn >= 0)
-                    quality
-                        .let { improve(it) }
-                        .let { if (newSellIn < 10) improve(it) else it }
-                        .let { if (newSellIn < 5) improve(it) else it }
-                else writeOff()).let { Item(name, newSellIn, it) }
-            }
+        fun update(item: Item) =
+            advance(item.sellIn)
+                .let { newSellIn ->
+                    (if (newSellIn >= 0)
+                        item.quality
+                            .let { improve(it) }
+                            .let { if (newSellIn < 10) improve(it) else it }
+                            .let { if (newSellIn < 5) improve(it) else it }
+                    else writeOff()).let { Item(item.name, newSellIn, it) }
+                }
     }
 
     object Sulfuras : ExtendedItem() {
-        fun update(name: String, sellIn: Int, quality: Int) = Item(name, sellIn, quality)
+        fun update(item: Item) = Item(item.name, item.sellIn, item.quality)
     }
 }
