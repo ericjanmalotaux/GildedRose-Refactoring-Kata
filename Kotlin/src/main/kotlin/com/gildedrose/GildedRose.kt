@@ -16,40 +16,28 @@ class GildedRose(var items: Array<Item>) {
 
     abstract class ExtendedItem(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
 
-
-        protected fun writeOff() {
-            quality = 0
-        }
-
-        protected fun depreciate() {
-            if (quality > 0) {
-                quality -= 1
-            }
-        }
-
-        protected fun improve() {
-            if (quality < 50) {
-                quality += 1
-            }
-        }
-
         companion object {
             @JvmStatic
-            protected fun advance(i: Int): Int = i - 1
+            protected fun advance(i: Int) = i - 1
+            @JvmStatic
+            protected fun depreciate(i: Int) = if (i > 0) i - 1 else i
+            @JvmStatic
+            protected fun improve(i: Int) = if (i < 50) i + 1 else i
+            @JvmStatic
+            protected fun writeOff() = 0
         }
     }
 
     class Normal(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
 
         companion object {
-            fun update(name: String, sellIn: Int, quality: Int): Normal {
+            fun update(name: String, sellIn: Int, quality: Int): Item {
                 val sellIn = advance(sellIn)
-                return Normal(name, sellIn, quality).apply {
-                    depreciate()
-                    if (sellIn < 0) {
-                        depreciate()
-                    }
+                var newQuality = depreciate(quality)
+                if (sellIn < 0) {
+                    newQuality = depreciate(newQuality)
                 }
+                return Item(name, sellIn, newQuality)
             }
         }
     }
@@ -57,14 +45,13 @@ class GildedRose(var items: Array<Item>) {
     class Brie(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
 
         companion object {
-            fun update(name: String, sellIn: Int, quality: Int): Brie {
+            fun update(name: String, sellIn: Int, quality: Int): Item {
                 val sellIn = advance(sellIn)
-                return Brie(name, sellIn, quality).apply {
-                    improve()
-                    if (sellIn < 0) {
-                        improve()
-                    }
+                var newQuality = improve(quality)
+                if (sellIn < 0) {
+                    newQuality = improve(newQuality)
                 }
+                return Item(name, sellIn, newQuality)
             }
         }
     }
@@ -72,21 +59,21 @@ class GildedRose(var items: Array<Item>) {
     class BackstagePass(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
 
         companion object {
-            fun update(name: String, sellIn: Int, quality: Int): BackstagePass {
+            fun update(name: String, sellIn: Int, quality: Int): Item {
                 val sellIn = advance(sellIn)
-                return BackstagePass(name, sellIn, quality).apply {
-                    if (sellIn >= 0) {
-                        improve()
-                        if (sellIn < 10) {
-                            improve()
-                        }
-                        if (sellIn < 5) {
-                            improve()
-                        }
-                    } else {
-                        writeOff()
+                var newQuality = quality
+                if (sellIn >= 0) {
+                    newQuality = improve(newQuality)
+                    if (sellIn < 10) {
+                        newQuality = improve(newQuality)
                     }
+                    if (sellIn < 5) {
+                        newQuality = improve(newQuality)
+                    }
+                } else {
+                    newQuality = writeOff()
                 }
+                return Item(name, sellIn, newQuality)
             }
         }
     }
@@ -94,7 +81,7 @@ class GildedRose(var items: Array<Item>) {
     class Sulfuras(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
 
         companion object {
-            fun update(name: String, sellIn: Int, quality: Int) = Sulfuras(name, sellIn, quality).apply { }
+            fun update(name: String, sellIn: Int, quality: Int) = Item(name, sellIn, quality).apply { }
         }
     }
 }
