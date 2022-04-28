@@ -18,8 +18,7 @@ class GildedRose(var items: Array<Item>) {
         fun update(item: Item) =
             (item.sellIn - 1)
                 .let { sellIn ->
-                    item.quality.depreciate()
-                        .let { if (sellIn < 0) it.depreciate() else it }
+                    item.quality.depreciate(if (sellIn >= 0) 1 else 2)
                         .let { Item(item.name, sellIn, it) }
                 }
     }
@@ -28,8 +27,7 @@ class GildedRose(var items: Array<Item>) {
         fun update(item: Item): Item =
             (item.sellIn - 1)
                 .let { sellIn ->
-                    item.quality.improve()
-                        .let { if (sellIn < 0) it.improve() else it }
+                    item.quality.improve(if (sellIn >= 0) 1 else 2)
                         .let { Item(item.name, sellIn, it) }
                 }
     }
@@ -40,9 +38,7 @@ class GildedRose(var items: Array<Item>) {
                 .let { sellIn ->
                     (if (sellIn < 0) 0
                     else
-                        item.quality.improve()
-                            .let { if (sellIn < 10) it.improve() else it }
-                            .let { if (sellIn < 5) it.improve() else it }
+                        item.quality.improve(if (sellIn < 5) 3 else if (sellIn < 10) 2 else 1)
                             )
                         .let { Item(item.name, sellIn, it) }
                 }
