@@ -15,7 +15,32 @@ class GildedRose(var items: Array<Item>) {
             .toTypedArray()
     }
 
-    class Normal(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
+    abstract class ExtendedItem(name: String, sellIn: Int, quality: Int): Item(name, sellIn, quality) {
+
+        open fun advance(): Item {
+            sellIn -= 1
+            return this
+        }
+
+
+        protected fun writeOff() {
+            quality = 0
+        }
+
+        protected fun depreciate() {
+            if (quality > 0) {
+                quality -= 1
+            }
+        }
+
+        protected fun improve() {
+            if (quality < 50) {
+                quality += 1
+            }
+        }
+    }
+
+    class Normal(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
         override fun advance(): Normal {
             super.advance()
             depreciate()
@@ -26,7 +51,7 @@ class GildedRose(var items: Array<Item>) {
         }
     }
 
-    class Brie(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
+    class Brie(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
         override fun advance(): Brie {
             super.advance()
             improve()
@@ -37,7 +62,7 @@ class GildedRose(var items: Array<Item>) {
         }
     }
 
-    class BackstagePass(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
+    class BackstagePass(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
         override fun advance(): BackstagePass {
             super.advance()
             if (sellIn >= 0) {
@@ -55,7 +80,7 @@ class GildedRose(var items: Array<Item>) {
         }
     }
 
-    class Sulfuras(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
+    class Sulfuras(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
         override fun advance(): Sulfuras {
             return this
         }
