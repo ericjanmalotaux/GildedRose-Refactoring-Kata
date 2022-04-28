@@ -14,51 +14,30 @@ class GildedRose(var items: Array<Item>) {
 
     object Normal {
         fun update(item: Item) =
-            (item.sellIn - 1)
-                .let {
-                    Item(
-                        item.name, it, item.quality.depreciate(
-                            when {
-                                it >= 0 -> 1
-                                else -> 2
-                            }
-                        )
-                    )
-                }
+            (item.sellIn - 1).let { Item(item.name, it, item.quality.depreciate(if (it >= 0) 1 else 2)) }
     }
 
     object Brie {
-        fun update(item: Item): Item =
-            (item.sellIn - 1)
-                .let {
-                    Item(
-                        item.name, it, item.quality.improve(
-                            when {
-                                it >= 0 -> 1
-                                else -> 2
-                            }
-                        )
-                    )
-                }
+        fun update(item: Item) =
+            (item.sellIn - 1).let { Item(item.name, it, item.quality.improve(if (it >= 0) 1 else 2)) }
     }
 
     object BackstagePass {
         fun update(item: Item) =
-            (item.sellIn - 1)
-                .let {
-                    Item(
-                        item.name, it, when {
-                            it < 0 -> 0
-                            else -> item.quality.improve(
-                                when {
-                                    it < 5 -> 3
-                                    it < 10 -> 2
-                                    else -> 1
-                                }
-                            )
-                        }
-                    )
-                }
+            (item.sellIn - 1).let {
+                Item(
+                    item.name, it, when {
+                        it < 0 -> 0
+                        else -> item.quality.improve(
+                            when {
+                                it < 5 -> 3
+                                it < 10 -> 2
+                                else -> 1
+                            }
+                        )
+                    }
+                )
+            }
     }
 
     object Sulfuras {
