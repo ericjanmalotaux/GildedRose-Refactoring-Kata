@@ -11,15 +11,14 @@ class GildedRose(var items: Array<Item>) {
     fun updateQuality() {
         items = items
             .map { (strategies[it.name] ?: ::Normal).invoke(it.name, it.sellIn, it.quality) }
-            .map { item -> item.advance() }
+            .map { it.apply { advance() } }
             .toTypedArray()
     }
 
-    abstract class ExtendedItem(name: String, sellIn: Int, quality: Int): Item(name, sellIn, quality) {
+    abstract class ExtendedItem(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
 
-        open fun advance(): Item {
+        open fun advance() {
             sellIn -= 1
-            return this
         }
 
 
@@ -41,29 +40,27 @@ class GildedRose(var items: Array<Item>) {
     }
 
     class Normal(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance(): Normal {
+        override fun advance() {
             super.advance()
             depreciate()
             if (sellIn < 0) {
                 depreciate()
             }
-            return this
         }
     }
 
     class Brie(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance(): Brie {
+        override fun advance() {
             super.advance()
             improve()
             if (sellIn < 0) {
                 improve()
             }
-            return this
         }
     }
 
     class BackstagePass(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance(): BackstagePass {
+        override fun advance() {
             super.advance()
             if (sellIn >= 0) {
                 improve()
@@ -76,13 +73,10 @@ class GildedRose(var items: Array<Item>) {
             } else {
                 writeOff()
             }
-            return this
         }
     }
 
     class Sulfuras(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance(): Sulfuras {
-            return this
-        }
+        override fun advance() {}
     }
 }
