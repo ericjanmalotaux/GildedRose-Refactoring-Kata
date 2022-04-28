@@ -14,74 +14,53 @@ class GildedRose(var items: Array<Item>) {
             .toTypedArray()
     }
 
-    abstract class ExtendedItem(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
-
+    sealed class ExtendedItem {
         companion object {
             @JvmStatic
             protected fun advance(i: Int) = i - 1
+
             @JvmStatic
             protected fun depreciate(i: Int) = if (i > 0) i - 1 else i
+
             @JvmStatic
             protected fun improve(i: Int) = if (i < 50) i + 1 else i
+
             @JvmStatic
             protected fun writeOff() = 0
         }
     }
 
-    class Normal(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-
-        companion object {
-            fun update(name: String, sellIn: Int, quality: Int): Item {
-                val sellIn = advance(sellIn)
-                var newQuality = depreciate(quality)
-                if (sellIn < 0) {
-                    newQuality = depreciate(newQuality)
-                }
-                return Item(name, sellIn, newQuality)
+    object Normal : ExtendedItem() {
+        fun update(name: String, sellIn: Int, quality: Int) =
+            advance(sellIn).let { newSellIn ->
+                depreciate(quality)
+                    .let { if (newSellIn < 0) depreciate(it) else it }
+                    .let { Item(name, newSellIn, it) }
             }
-        }
     }
 
-    class Brie(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-
-        companion object {
-            fun update(name: String, sellIn: Int, quality: Int): Item {
-                val sellIn = advance(sellIn)
-                var newQuality = improve(quality)
-                if (sellIn < 0) {
-                    newQuality = improve(newQuality)
-                }
-                return Item(name, sellIn, newQuality)
+    object Brie : ExtendedItem() {
+        fun update(name: String, sellIn: Int, quality: Int): Item =
+            advance(sellIn).let { newSellIn ->
+                improve(quality)
+                    .let { if (newSellIn < 0) improve(it) else it }
+                    .let { Item(name, newSellIn, it) }
             }
-        }
     }
 
-    class BackstagePass(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-
-        companion object {
-            fun update(name: String, sellIn: Int, quality: Int): Item {
-                val sellIn = advance(sellIn)
-                var newQuality = quality
-                if (sellIn >= 0) {
-                    newQuality = improve(newQuality)
-                    if (sellIn < 10) {
-                        newQuality = improve(newQuality)
-                    }
-                    if (sellIn < 5) {
-                        newQuality = improve(newQuality)
-                    }
-                } else {
-                    newQuality = writeOff()
-                }
-                return Item(name, sellIn, newQuality)
+    object BackstagePass : ExtendedItem() {
+        fun update(name: String, sellIn: Int, quality: Int) =
+            advance(sellIn).let { newSellIn ->
+                (if (newSellIn >= 0)
+                    quality
+                        .let { improve(it) }
+                        .let { if (newSellIn < 10) improve(it) else it }
+                        .let { if (newSellIn < 5) improve(it) else it }
+                else writeOff()).let { Item(name, newSellIn, it) }
             }
-        }
     }
 
-    class Sulfuras(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-
-        companion object {
-            fun update(name: String, sellIn: Int, quality: Int) = Item(name, sellIn, quality).apply { }
-        }
+    object Sulfuras : ExtendedItem() {
+        fun update(name: String, sellIn: Int, quality: Int) = Item(name, sellIn, quality)
     }
 }
