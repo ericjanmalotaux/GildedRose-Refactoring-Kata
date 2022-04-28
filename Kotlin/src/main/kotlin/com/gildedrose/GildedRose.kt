@@ -9,38 +9,55 @@ class GildedRose(var items: Array<Item>) {
     )
 
     fun updateQuality() {
-        items = items
-            .map { (strategies[it.name] ?: Normal::update).invoke(it) }
-            .toTypedArray()
+        items = items.map { (strategies[it.name] ?: Normal::update).invoke(it) }.toTypedArray()
     }
 
     object Normal {
         fun update(item: Item) =
             (item.sellIn - 1)
-                .let { sellIn ->
-                    item.quality.depreciate(if (sellIn >= 0) 1 else 2)
-                        .let { Item(item.name, sellIn, it) }
+                .let {
+                    Item(
+                        item.name, it, item.quality.depreciate(
+                            when {
+                                it >= 0 -> 1
+                                else -> 2
+                            }
+                        )
+                    )
                 }
     }
 
     object Brie {
         fun update(item: Item): Item =
             (item.sellIn - 1)
-                .let { sellIn ->
-                    item.quality.improve(if (sellIn >= 0) 1 else 2)
-                        .let { Item(item.name, sellIn, it) }
+                .let {
+                    Item(
+                        item.name, it, item.quality.improve(
+                            when {
+                                it >= 0 -> 1
+                                else -> 2
+                            }
+                        )
+                    )
                 }
     }
 
     object BackstagePass {
         fun update(item: Item) =
             (item.sellIn - 1)
-                .let { sellIn ->
-                    (if (sellIn < 0) 0
-                    else
-                        item.quality.improve(if (sellIn < 5) 3 else if (sellIn < 10) 2 else 1)
+                .let {
+                    Item(
+                        item.name, it, when {
+                            it < 0 -> 0
+                            else -> item.quality.improve(
+                                when {
+                                    it < 5 -> 3
+                                    it < 10 -> 2
+                                    else -> 1
+                                }
                             )
-                        .let { Item(item.name, sellIn, it) }
+                        }
+                    )
                 }
     }
 
