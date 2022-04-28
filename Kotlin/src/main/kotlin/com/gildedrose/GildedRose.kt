@@ -41,7 +41,7 @@ class GildedRose(var items: Array<Item>) {
     }
 
     object Sulfuras {
-        fun updateQuality(item: Item) = Item(item.name, item.sellIn, item.quality)
+        fun updateQuality(item: Item) = item
     }
 
 }
