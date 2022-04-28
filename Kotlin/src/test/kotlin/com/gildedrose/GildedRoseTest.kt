@@ -49,86 +49,88 @@ internal class GildedRoseTest {
 
     @Test
     fun ordinaryItemsDecreaseInSellIn() {
-        val elixir = gildedRose.items.first { it.name.startsWith("Elixir") }
-        while (elixir.sellIn >= 0) {
-            val sellIn = elixir.sellIn
+        gildedRose.elixir
+        while (gildedRose.elixir.sellIn >= 0) {
+            val sellIn = gildedRose.elixir.sellIn
             gildedRose.updateQuality()
-            assertEquals(sellIn - 1, elixir.sellIn)
+            assertEquals(sellIn - 1, gildedRose.elixir.sellIn)
         }
     }
 
     @Test
     fun ordinaryItemsDecreaseInQualityUntilZero() {
-        val elixir = gildedRose.items.first { it.name.startsWith("Elixir") }
-        while (elixir.quality != 0) {
-            val quality = elixir.quality
+        while (gildedRose.elixir.quality != 0) {
+            val quality = gildedRose.elixir.quality
             gildedRose.updateQuality()
-            assertTrue(elixir.quality < quality)
+            assertTrue(gildedRose.elixir.quality < quality)
         }
         gildedRose.updateQuality()
-        assertEquals(0, elixir.quality)
+        assertEquals(0, gildedRose.elixir.quality)
     }
 
     @Test
     fun afterSellByDateHasPassedQualityDecreasesTwiceAsFase() {
-        val elixir = gildedRose.items.first { it.name.startsWith("Elixir") }
-        while (elixir.sellIn > 0) {
-            val quality = elixir.quality
+        while (gildedRose.elixir.sellIn > 0) {
+            val quality = gildedRose.elixir.quality
             gildedRose.updateQuality()
-            assertEquals(quality - 1, elixir.quality)
+            assertEquals(quality - 1, gildedRose.elixir.quality)
         }
-        val quality = elixir.quality
+        val quality = gildedRose.elixir.quality
         gildedRose.updateQuality()
-        assertEquals(quality - 2, elixir.quality)
-        while (elixir.sellIn > -3) {
+        assertEquals(quality - 2, gildedRose.elixir.quality)
+        while (gildedRose.elixir.sellIn > -3) {
             gildedRose.updateQuality()
-            assertEquals(0, elixir.quality)
+            assertEquals(0, gildedRose.elixir.quality)
         }
     }
 
     @Test
     fun agedBrieIncreasesInQuality() {
-        gildedRose.items.first { it.name == "Aged Brie" }.also { agedBrie ->
-            while (agedBrie.quality < 50) {
-                val quality = agedBrie.quality
-                gildedRose.updateQuality()
-                assertTrue(agedBrie.quality > quality)
-            }
+        while (gildedRose.brie.quality < 50) {
+            val quality = gildedRose.brie.quality
             gildedRose.updateQuality()
-            assertTrue(agedBrie.quality == 50)
+            assertTrue(gildedRose.brie.quality > quality)
         }
+        gildedRose.updateQuality()
+        assertTrue(gildedRose.brie.quality == 50)
     }
 
     @Test
     fun sulfurasNeverHasToBeSoldOrDecreasesInQuality() {
-        val sulfuras = gildedRose.items.first { it.name.startsWith("Sulfuras") }
+        val sulfuras = gildedRose.sulfuras
         val quality = sulfuras.quality
         val sellIn = sulfuras.sellIn
         gildedRose.updateQuality()
-        assertEquals(quality, sulfuras.quality)
-        assertEquals(sellIn, sulfuras.sellIn)
+        assertEquals(quality, gildedRose.sulfuras.quality)
+        assertEquals(sellIn, gildedRose.sulfuras.sellIn)
     }
+
+    private val GildedRose.sulfuras get() = items.first { it.name.startsWith("Sulfuras") }
 
     @Test
     fun backstagePassesAreDifferent() {
-        val backstage = gildedRose.items.first { it.name.startsWith("Backstage") }
-        while (backstage.sellIn > 10) {
-            val quality = backstage.quality
+        gildedRose.backstagePass
+        while (gildedRose.backstagePass.sellIn > 10) {
+            val quality = gildedRose.backstagePass.quality
             gildedRose.updateQuality()
-            assertEquals(quality + 1, backstage.quality)
+            assertEquals(quality + 1, gildedRose.backstagePass.quality)
         }
-        while (backstage.sellIn > 5) {
-            val quality = backstage.quality
+        while (gildedRose.backstagePass.sellIn > 5) {
+            val quality = gildedRose.backstagePass.quality
             gildedRose.updateQuality()
-            assertEquals(quality + 2, backstage.quality)
+            assertEquals(quality + 2, gildedRose.backstagePass.quality)
         }
-        while (backstage.sellIn > 0) {
-            val quality = backstage.quality
+        while (gildedRose.backstagePass.sellIn > 0) {
+            val quality = gildedRose.backstagePass.quality
             gildedRose.updateQuality()
-            assertEquals(quality + 3, backstage.quality)
+            assertEquals(quality + 3, gildedRose.backstagePass.quality)
         }
         gildedRose.updateQuality()
-        assertEquals(-1, backstage.sellIn)
-        assertEquals(0, backstage.quality)
+        assertEquals(-1, gildedRose.backstagePass.sellIn)
+        assertEquals(0, gildedRose.backstagePass.quality)
     }
+
+    private val GildedRose.backstagePass get() = items.first { it.name.startsWith("Backstage") }
+    private val GildedRose.brie get() = items.first { it.name == "Aged Brie" }
+    private val GildedRose.elixir get() = items.first { it.name.startsWith("Elixir") }
 }
