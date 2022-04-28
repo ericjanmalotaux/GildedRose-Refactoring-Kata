@@ -3,23 +3,18 @@ package com.gildedrose
 class GildedRose(var items: Array<Item>) {
 
     val strategies = mapOf(
-        "Aged Brie" to ::Brie,
-        "Backstage passes to a TAFKAL80ETC concert" to ::BackstagePass,
-        "Sulfuras, Hand of Ragnaros" to ::Sulfuras
+        "Aged Brie" to Brie::update,
+        "Backstage passes to a TAFKAL80ETC concert" to BackstagePass::update,
+        "Sulfuras, Hand of Ragnaros" to Sulfuras::update
     )
 
     fun updateQuality() {
         items = items
-            .map { (strategies[it.name] ?: ::Normal).invoke(it.name, it.sellIn, it.quality) }
-            .map { it.apply { advance() } }
+            .map { (strategies[it.name] ?: Normal::update).invoke(it.name, it.sellIn, it.quality) }
             .toTypedArray()
     }
 
     abstract class ExtendedItem(name: String, sellIn: Int, quality: Int) : Item(name, sellIn, quality) {
-
-        open fun advance() {
-            sellIn -= 1
-        }
 
 
         protected fun writeOff() {
@@ -37,46 +32,69 @@ class GildedRose(var items: Array<Item>) {
                 quality += 1
             }
         }
+
+        companion object {
+            @JvmStatic
+            protected fun advance(i: Int): Int = i - 1
+        }
     }
 
     class Normal(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance() {
-            super.advance()
-            depreciate()
-            if (sellIn < 0) {
-                depreciate()
+
+        companion object {
+            fun update(name: String, sellIn: Int, quality: Int): Normal {
+                val sellIn = advance(sellIn)
+                return Normal(name, sellIn, quality).apply {
+                    depreciate()
+                    if (sellIn < 0) {
+                        depreciate()
+                    }
+                }
             }
         }
     }
 
     class Brie(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance() {
-            super.advance()
-            improve()
-            if (sellIn < 0) {
-                improve()
+
+        companion object {
+            fun update(name: String, sellIn: Int, quality: Int): Brie {
+                val sellIn = advance(sellIn)
+                return Brie(name, sellIn, quality).apply {
+                    improve()
+                    if (sellIn < 0) {
+                        improve()
+                    }
+                }
             }
         }
     }
 
     class BackstagePass(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance() {
-            super.advance()
-            if (sellIn >= 0) {
-                improve()
-                if (sellIn < 10) {
-                    improve()
+
+        companion object {
+            fun update(name: String, sellIn: Int, quality: Int): BackstagePass {
+                val sellIn = advance(sellIn)
+                return BackstagePass(name, sellIn, quality).apply {
+                    if (sellIn >= 0) {
+                        improve()
+                        if (sellIn < 10) {
+                            improve()
+                        }
+                        if (sellIn < 5) {
+                            improve()
+                        }
+                    } else {
+                        writeOff()
+                    }
                 }
-                if (sellIn < 5) {
-                    improve()
-                }
-            } else {
-                writeOff()
             }
         }
     }
 
     class Sulfuras(name: String, sellIn: Int, quality: Int) : ExtendedItem(name, sellIn, quality) {
-        override fun advance() {}
+
+        companion object {
+            fun update(name: String, sellIn: Int, quality: Int) = Sulfuras(name, sellIn, quality).apply { }
+        }
     }
 }
