@@ -26,7 +26,7 @@ class GildedRose(var items: Array<Item>) {
         fun update(item: Item) =
             (item.sellIn - 1).let {
                 Item(
-                    item.name, it, when {
+                    item.name, it, quality = when {
                         it < 0 -> 0
                         else -> item.quality.improve(
                             when {
