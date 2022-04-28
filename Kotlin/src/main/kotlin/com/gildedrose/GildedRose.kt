@@ -14,23 +14,7 @@ class GildedRose(var items: Array<Item>) {
             .toTypedArray()
     }
 
-    sealed class ExtendedItem {
-        companion object {
-            @JvmStatic
-            protected fun advance(i: Int) = i - 1
-
-            @JvmStatic
-            protected fun depreciate(i: Int) = if (i > 0) i - 1 else i
-
-            @JvmStatic
-            protected fun improve(i: Int) = if (i < 50) i + 1 else i
-
-            @JvmStatic
-            protected fun writeOff() = 0
-        }
-    }
-
-    object Normal : ExtendedItem() {
+    object Normal {
         fun update(item: Item) =
             advance(item.sellIn)
                 .let { sellIn ->
@@ -40,7 +24,7 @@ class GildedRose(var items: Array<Item>) {
                 }
     }
 
-    object Brie : ExtendedItem() {
+    object Brie {
         fun update(item: Item): Item =
             advance(item.sellIn)
                 .let { sellIn ->
@@ -50,7 +34,7 @@ class GildedRose(var items: Array<Item>) {
                 }
     }
 
-    object BackstagePass : ExtendedItem() {
+    object BackstagePass {
         fun update(item: Item) =
             advance(item.sellIn)
                 .let { sellIn ->
@@ -63,7 +47,13 @@ class GildedRose(var items: Array<Item>) {
                 }
     }
 
-    object Sulfuras : ExtendedItem() {
+    object Sulfuras {
         fun update(item: Item) = Item(item.name, item.sellIn, item.quality)
     }
+
 }
+
+fun advance(i: Int) = i - 1
+fun depreciate(i: Int) = if (i > 0) i - 1 else i
+fun improve(i: Int) = if (i < 50) i + 1 else i
+fun writeOff() = 0
