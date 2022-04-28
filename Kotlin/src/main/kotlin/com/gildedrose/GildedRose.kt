@@ -33,33 +33,33 @@ class GildedRose(var items: Array<Item>) {
     object Normal : ExtendedItem() {
         fun update(item: Item) =
             advance(item.sellIn)
-                .let { newSellIn ->
+                .let { sellIn ->
                     depreciate(item.quality)
-                        .let { if (newSellIn < 0) depreciate(it) else it }
-                        .let { Item(item.name, newSellIn, it) }
+                        .let { if (sellIn < 0) depreciate(it) else it }
+                        .let { Item(item.name, sellIn, it) }
                 }
     }
 
     object Brie : ExtendedItem() {
         fun update(item: Item): Item =
             advance(item.sellIn)
-                .let { newSellIn ->
+                .let { sellIn ->
                     improve(item.quality)
-                        .let { if (newSellIn < 0) improve(it) else it }
-                        .let { Item(item.name, newSellIn, it) }
+                        .let { if (sellIn < 0) improve(it) else it }
+                        .let { Item(item.name, sellIn, it) }
                 }
     }
 
     object BackstagePass : ExtendedItem() {
         fun update(item: Item) =
             advance(item.sellIn)
-                .let { newSellIn ->
-                    (if (newSellIn >= 0)
+                .let { sellIn ->
+                    (if (sellIn >= 0)
                         item.quality
                             .let { improve(it) }
-                            .let { if (newSellIn < 10) improve(it) else it }
-                            .let { if (newSellIn < 5) improve(it) else it }
-                    else writeOff()).let { Item(item.name, newSellIn, it) }
+                            .let { if (sellIn < 10) improve(it) else it }
+                            .let { if (sellIn < 5) improve(it) else it }
+                    else writeOff()).let { Item(item.name, sellIn, it) }
                 }
     }
 
