@@ -18,8 +18,8 @@ class GildedRose(var items: Array<Item>) {
         fun update(item: Item) =
             (item.sellIn - 1)
                 .let { sellIn ->
-                    depreciate(item.quality)
-                        .let { if (sellIn < 0) depreciate(it) else it }
+                    item.quality.depreciate()
+                        .let { if (sellIn < 0) it.depreciate() else it }
                         .let { Item(item.name, sellIn, it) }
                 }
     }
@@ -28,8 +28,8 @@ class GildedRose(var items: Array<Item>) {
         fun update(item: Item): Item =
             (item.sellIn - 1)
                 .let { sellIn ->
-                    improve(item.quality)
-                        .let { if (sellIn < 0) improve(it) else it }
+                    item.quality.improve()
+                        .let { if (sellIn < 0) it.improve() else it }
                         .let { Item(item.name, sellIn, it) }
                 }
     }
@@ -40,10 +40,9 @@ class GildedRose(var items: Array<Item>) {
                 .let { sellIn ->
                     (if (sellIn < 0) 0
                     else
-                        item.quality
-                            .let { improve(it) }
-                            .let { if (sellIn < 10) improve(it) else it }
-                            .let { if (sellIn < 5) improve(it) else it }
+                        item.quality.improve()
+                            .let { if (sellIn < 10) it.improve() else it }
+                            .let { if (sellIn < 5) it.improve() else it }
                             )
                         .let { Item(item.name, sellIn, it) }
                 }
@@ -55,5 +54,5 @@ class GildedRose(var items: Array<Item>) {
 
 }
 
-fun depreciate(i: Int) = if (i > 0) i - 1 else i
-fun improve(i: Int) = if (i < 50) i + 1 else i
+fun Int.depreciate(step: Int = 1) = if (this > 0) this - step else this
+fun Int.improve(step: Int = 1) = if (this < 50) this + step else this
