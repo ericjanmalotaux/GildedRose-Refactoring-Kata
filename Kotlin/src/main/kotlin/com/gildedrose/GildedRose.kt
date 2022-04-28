@@ -54,5 +54,5 @@ class GildedRose(var items: Array<Item>) {
 
 }
 
-fun Int.depreciate(step: Int = 1) = if (this > 0) this - step else this
-fun Int.improve(step: Int = 1) = if (this < 50) this + step else this
+fun Int.depreciate(step: Int = 1) = (this - step).takeIf { it >= 0 } ?: this
+fun Int.improve(step: Int = 1) = (this + step).takeIf { it <= 50 } ?: this
