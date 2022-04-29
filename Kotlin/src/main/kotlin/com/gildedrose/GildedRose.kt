@@ -1,9 +1,10 @@
 package com.gildedrose
 
+import java.lang.Integer.*
+
 private const val QUALITY_MIH = 0
 private const val QUALITY_MAX = 50
-private fun Int.degrade(step: Int = 1) = (this - step).takeIf { it >= QUALITY_MIH } ?: QUALITY_MIH
-private fun Int.improve(step: Int = 1) = (this + step).takeIf { it <= QUALITY_MAX } ?: QUALITY_MAX
+private fun Int.degrade(step: Int = 1) = min(max(this - step, QUALITY_MIH), QUALITY_MAX)
 
 class GildedRose(var items: Array<Item>) {
 
@@ -18,40 +19,43 @@ class GildedRose(var items: Array<Item>) {
         items = items.map { (strategies[it.name] ?: Normal::updateQuality).invoke(it) }.toTypedArray()
     }
 
-    private object Normal {
-        fun updateQuality(item: Item) =
-            (item.sellIn - 1).let { Item(item.name, it, item.quality.degrade(if (it >= QUALITY_MIH) 1 else 2)) }
+    abstract class AbstractStrategy {
+        open fun Item.advance() = sellIn - 1
+        open fun updateQuality(item: Item) =
+            item.advance()
+                .takeIf { sellIn -> sellIn != item.sellIn }
+                ?.let { Item(item.name, it, item.quality.degrade(degradation(it))) }
+                ?: item
+
+        open fun degradation(sellIn: Int) = 0
     }
 
-    private object Brie {
-        fun updateQuality(item: Item) =
-            (item.sellIn - 1).let { Item(item.name, it, item.quality.improve(if (it >= QUALITY_MIH) 1 else 2)) }
+    private object Normal : AbstractStrategy() {
+        override fun degradation(sellIn: Int) = if (sellIn >= 0) 1 else 2
     }
 
-    private object BackstagePass {
-        fun updateQuality(item: Item) =
-            (item.sellIn - 1).let {
-                Item(
-                    item.name, it, quality = when {
-                        it < 0 -> 0
-                        else -> item.quality.improve(
-                            when {
-                                it < 5 -> 3
-                                it < 10 -> 2
-                                else -> 1
-                            }
-                        )
-                    }
-                )
+    private object Brie : AbstractStrategy() {
+        override fun degradation(sellIn: Int) = if (sellIn >= 0) -1 else -2
+    }
+
+    private object BackstagePass : AbstractStrategy() {
+        override fun updateQuality(item: Item) =
+            item.advance().let {
+                Item(item.name, it, if (it < 0) 0 else item.quality.degrade(degradation(it)))
             }
+
+        override fun degradation(sellIn: Int) = when {
+            sellIn < 5 -> -3
+            sellIn < 10 -> -2
+            else -> -1
+        }
     }
 
-    private object Sulfuras {
-        fun updateQuality(item: Item) = item
+    private object Sulfuras : AbstractStrategy() {
+        override fun Item.advance() = 0
     }
 
-    private object Conjured {
-        fun updateQuality(item: Item) =
-            (item.sellIn - 1).let { Item(item.name, it, item.quality.degrade(if (it >= QUALITY_MIH) 2 else 4)) }
+    private object Conjured : AbstractStrategy() {
+        override fun degradation(sellIn: Int) = if (sellIn >= 0) 2 else 4
     }
 }
