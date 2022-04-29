@@ -16,7 +16,7 @@ internal class GildedRoseTest {
             Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
             Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
             // this conjured item does not work properly yet
-            Item("Conjured Mana Cake", 3, 6)
+            Item("Conjured Mana Cake", 3, 17)
         )
     )
 
@@ -105,6 +105,22 @@ internal class GildedRoseTest {
         assertEquals(sellIn, gildedRose.sulfuras.sellIn)
     }
 
+    @Test
+    fun conjuredDegradesTwiceAsFast() {
+        gildedRose.updateQuality()
+        assertEquals(15, gildedRose.conjured.quality )
+        gildedRose.updateQuality()
+        assertEquals(13, gildedRose.conjured.quality )
+        gildedRose.updateQuality()
+        assertEquals(11, gildedRose.conjured.quality )
+        gildedRose.updateQuality()
+        assertEquals(7, gildedRose.conjured.quality )
+        gildedRose.updateQuality()
+        assertEquals(3, gildedRose.conjured.quality )
+        gildedRose.updateQuality()
+        assertEquals(0, gildedRose.conjured.quality )
+    }
+
     private val GildedRose.sulfuras get() = items.first { it.name.startsWith("Sulfuras") }
 
     @Test
@@ -133,4 +149,5 @@ internal class GildedRoseTest {
     private val GildedRose.backstagePass get() = items.first { it.name.startsWith("Backstage") }
     private val GildedRose.brie get() = items.first { it.name == "Aged Brie" }
     private val GildedRose.elixir get() = items.first { it.name.startsWith("Elixir") }
+    private val GildedRose.conjured get() = items.first { it.name.startsWith("Conjured") }
 }

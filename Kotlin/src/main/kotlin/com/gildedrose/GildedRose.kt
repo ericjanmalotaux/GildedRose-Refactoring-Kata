@@ -1,14 +1,17 @@
 package com.gildedrose
 
-private fun Int.depreciate(step: Int = 1) = (this - step).takeIf { it >= 0 } ?: this
-private fun Int.improve(step: Int = 1) = (this + step).takeIf { it <= 50 } ?: this
+private const val QUALITY_MIH = 0
+private const val QUALITY_MAX = 50
+private fun Int.degrade(step: Int = 1) = (this - step).takeIf { it >= QUALITY_MIH } ?: QUALITY_MIH
+private fun Int.improve(step: Int = 1) = (this + step).takeIf { it <= QUALITY_MAX } ?: QUALITY_MAX
 
 class GildedRose(var items: Array<Item>) {
 
     private val strategies = mapOf(
         "Aged Brie" to Brie::updateQuality,
         "Backstage passes to a TAFKAL80ETC concert" to BackstagePass::updateQuality,
-        "Sulfuras, Hand of Ragnaros" to Sulfuras::updateQuality
+        "Sulfuras, Hand of Ragnaros" to Sulfuras::updateQuality,
+        "Conjured Mana Cake" to Conjured::updateQuality,
     )
 
     fun updateQuality() {
@@ -17,12 +20,12 @@ class GildedRose(var items: Array<Item>) {
 
     private object Normal {
         fun updateQuality(item: Item) =
-            (item.sellIn - 1).let { Item(item.name, it, item.quality.depreciate(if (it >= 0) 1 else 2)) }
+            (item.sellIn - 1).let { Item(item.name, it, item.quality.degrade(if (it >= QUALITY_MIH) 1 else 2)) }
     }
 
     private object Brie {
         fun updateQuality(item: Item) =
-            (item.sellIn - 1).let { Item(item.name, it, item.quality.improve(if (it >= 0) 1 else 2)) }
+            (item.sellIn - 1).let { Item(item.name, it, item.quality.improve(if (it >= QUALITY_MIH) 1 else 2)) }
     }
 
     private object BackstagePass {
@@ -45,5 +48,10 @@ class GildedRose(var items: Array<Item>) {
 
     private object Sulfuras {
         fun updateQuality(item: Item) = item
+    }
+
+    private object Conjured {
+        fun updateQuality(item: Item) =
+            (item.sellIn - 1).let { Item(item.name, it, item.quality.degrade(if (it >= QUALITY_MIH) 2 else 4)) }
     }
 }
